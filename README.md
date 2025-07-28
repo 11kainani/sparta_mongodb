@@ -129,7 +129,3 @@ On a social media app with a user profile a SQL database may not be the best cho
 
 ```
 
-
-At least 2 case studies please
-OPTIONAL: After this please try to write up what we did as a class today in a presentable way.
-Images are good please have some, but code blocks for commands/queries we do allow for copying and pasting. Combine both (images and code blocks) if possible.
