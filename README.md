@@ -90,14 +90,14 @@ Sharding devides a large collection into smaller chucks and distributes them acr
   - maintains metadata about which shards stores which data
   - a mongos router directing client queries to the correct shard
 #### Advantage and Disadvantage?
-| Feature                | Advantages                                                   | Disadvantages                                              |
-|------------------------|-------------------------------------------------------------|-----------------------------------------------------------|
-| Horizontal Scalability | Handles very large datasets by distributing them across shards | Increased complexity in setup, monitoring, and maintenance |
-| Performance            | Spreads read/write load, improving throughput                | Requires careful shard key selection; poor choice can cause data imbalance |
-| Storage Capacity       | Each shard stores part of the data, increasing overall capacity | Joins and aggregations across shards can be slower        |
-| Availability           | With proper replica sets per shard, provides redundancy      | More nodes mean higher operational costs                  |
-| Flexibility            | Can grow cluster by adding shards without downtime          | Migration and balancing operations may affect performance |
-| Query Parallelism      | Can execute queries in parallel across shards               | Some queries may need to target all shards (scatter-gather), reducing speed |
+| Feature                | Advantages                                                      | Disadvantages                                                               |
+|------------------------|-----------------------------------------------------------------|-----------------------------------------------------------------------------|
+| Horizontal Scalability | Handles very large datasets by distributing them across shards  | Increased complexity in setup, monitoring, and maintenance                  |
+| Performance            | Spreads read/write load, improving throughput                   | Requires careful shard key selection; poor choice can cause data imbalance  |
+| Storage Capacity       | Each shard stores part of the data, increasing overall capacity | Joins and aggregations across shards can be slower                          |
+| Availability           | With proper replica sets per shard, provides redundancy         | More nodes mean higher operational costs                                    |
+| Flexibility            | Can grow cluster by adding shards without downtime              | Migration and balancing operations may affect performance                   |
+| Query Parallelism      | Can execute queries in parallel across shards                   | Some queries may need to target all shards (scatter-gather), reducing speed |
 
 ## MongoDB Use Cases?
 
@@ -107,7 +107,7 @@ On a social media app with a user profile a SQL database may not be the best cho
 2. Need to add new feature without having to overhaul the whole system to adapt to the new schema
 3. Embedding other documents like posts
 4. Horizontal scaling
-5. 
+
 **Example of a User profile page as a document:**
 ```BSON
 {
@@ -160,3 +160,82 @@ On an E-commerce platform, it may be needed to manage a product catalogs where e
 There are few benefits with this method: 
 - Flexibility in storing diverse data types
 - Simple querying and indexing using MongoDB's document model
+
+## Commands
+
+### Embedding
+ 
+Embed subdocuments inside a larger document.
+ 
+This is good for:
+* One-to-one
+* One-to-many
+ 
+
+ 
+### Referencing
+ 
+Separate documents will be referenced. Helps with redundancy but affects the read function.
+ 
+This is good for:
+* Many-to-many
+ 
+
+ 
+ 
+```
+db["characters"].find({name:"Luke Skywalker"},{name:1,height:1, "species.name":1})
+{
+  _id: ObjectId('68889785b50944b8fa848908'),
+  name: 'Luke Skywalker',
+  height: '172',
+  species: {
+    name: 'Human'
+  }
+}
+
+
+db.characters.find(
+  {
+    'species.name' : 'Human'
+  }, {
+    name:1,
+    _id:0
+  } 
+)
+{
+  name: 'Arvel Crynyd'
+}
+{
+  name: 'Beru Whitesun lars'
+} ... 
+```
+
+```
+Female characters with blue eyes
+Male characters with yellow eyes
+
+db.characters.find(
+  {
+    $or: [
+      {
+        $and: [
+          { gender: "female" },
+          { eye_color: "blue" }
+        ]
+      },
+      {
+        $and: [
+          { gender: "male" },
+          { eye_color: "yellow" }
+        ]
+      }
+    ]
+  },
+  {
+    _id: 0,
+    name: 1
+  }
+)
+```
+
