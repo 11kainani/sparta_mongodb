@@ -100,6 +100,8 @@ Sharding devides a large collection into smaller chucks and distributes them acr
 | Query Parallelism      | Can execute queries in parallel across shards               | Some queries may need to target all shards (scatter-gather), reducing speed |
 
 ## MongoDB Use Cases?
+
+### Social Media App
 On a social media app with a user profile a SQL database may not be the best choice for multiple reason: 
 1. Need of a flexible schema: Not everyone has the same thing on their profile. One may have a bio, another may not have a profile picture. The need for specific settings for each user. 
 2. Need to add new feature without having to overhaul the whole system to adapt to the new schema
@@ -126,6 +128,35 @@ On a social media app with a user profile a SQL database may not be the best cho
     }
   ]
 }
-
 ```
+### E-commerce platform
+On an E-commerce platform, it may be needed to manage a product catalogs where each product can have a different attributes. 
 
+**Example of a product catalogue**
+```BSON
+[
+{
+  "_id": "64cfa14fa5b3bca6d8a2e1e1",
+  "name": "MacBook Pro",
+  "category": "Laptop",
+  "specs": {
+    "CPU": "M3",
+    "RAM": "16GB",
+    "storage": "1TB"
+  },
+  "createdAt": "2025-07-29T18:50:00Z"
+}
+
+{
+  "_id": "64cfa14fa5b3bca6d8a2e1e2",
+  "name": "Atomic Habits",
+  "category": "Book",
+  "author": "James Clear",
+  "ISBN": "978-0735211292",
+  "createdAt": "2025-07-29T18:51:00Z"
+}
+]
+```
+There are few benefits with this method: 
+- Flexibility in storing diverse data types
+- Simple querying and indexing using MongoDB's document model
